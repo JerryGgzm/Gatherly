@@ -107,6 +107,14 @@ export const SEATS: Record<CatId, Seat> = {
   white: { x: 630, y: 440, s: 1.12, turn: -0.55, pawY: -46, pawDX: -12, back: false, plate: { x: 508, y: 362 } },
 };
 
+/** Which cats are already seated at a dinner with `taken` guests. Orange always greets first; the rest vary per table. */
+export function tableCats(dinnerId: string, taken: number): CatId[] {
+  const rest = CAT_ORDER.slice(1);
+  const shift = [...dinnerId].reduce((h, ch) => h + ch.charCodeAt(0), 0) % rest.length;
+  const order: CatId[] = ["orange", ...rest.slice(shift), ...rest.slice(0, shift)];
+  return order.slice(0, Math.min(taken, order.length));
+}
+
 export const USER_SEAT = { x: 400, y: 480, plate: { x: 400, y: 390 } };
 
 export const headOf = (id: CatId) => {

@@ -113,9 +113,17 @@ export type Dinner = {
   themes: ThemeId[];
   budget: BudgetId;
   seatsTaken: number;
+  /** Started by the user from an empty night. */
+  created?: boolean;
 };
 
+export type Night = Pick<Dinner, "weekday" | "dayLabel" | "month" | "day">;
+
 export const DINNERS: Dinner[] = [
+  { id: "thu-oct1-ud", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 1, location: "udistrict", themes: ["books", "tech", "art"], budget: "casual", seatsTaken: 6 },
+  { id: "thu-oct1-slu", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 1, location: "slu", themes: ["startups", "fitness", "food"], budget: "comfortable", seatsTaken: 6 },
+  { id: "sat-oct3-cap", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 3, location: "capitolhill", themes: ["music", "life", "food"], budget: "casual", seatsTaken: 4 },
+  { id: "sat-oct3-bel", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 3, location: "bellevue", themes: ["tech", "travel", "life"], budget: "treat", seatsTaken: 2 },
   { id: "thu-oct8-slu", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 8, location: "slu", themes: ["tech", "startups", "travel"], budget: "comfortable", seatsTaken: 4 },
   { id: "thu-oct8-cap", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 8, location: "capitolhill", themes: ["music", "art", "film"], budget: "casual", seatsTaken: 2 },
   { id: "sat-oct10-cap", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 10, location: "capitolhill", themes: ["startups", "tech", "life"], budget: "comfortable", seatsTaken: 3 },
@@ -127,6 +135,31 @@ export const DINNERS: Dinner[] = [
 ];
 
 export const dinnerById = (id: string) => DINNERS.find((d) => d.id === id);
+
+export const SEATS_PER_TABLE = 6;
+
+export const nightKey = (d: Pick<Dinner, "month" | "day">) => `${d.month}-${d.day}`;
+
+/** Open booking nights: Thursdays and Saturdays, whether or not anyone has started a table yet. */
+export const NIGHTS: Night[] = [
+  { weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 1 },
+  { weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 3 },
+  { weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 8 },
+  { weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 10 },
+  { weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 15 },
+  { weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 17 },
+  { weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 22 },
+  { weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 24 },
+];
+
+export const nightByKey = (k: string) => NIGHTS.find((n) => nightKey(n) === k);
+
+const titleMonth = (m: string) => m.charAt(0) + m.slice(1).toLowerCase();
+
+/** "Sat · Oct 10 · Capitol Hill" */
+export const dinnerStub = (d: Dinner) => `${titleMonth(d.weekday)} · ${titleMonth(d.month)} ${d.day} · ${locationById(d.location).short}`;
+
+export const nightLabel = (n: Night) => `${titleMonth(n.weekday)} · ${titleMonth(n.month)} ${n.day}`;
 
 export const SOCIAL_INTENTS = [
   { id: "friends", label: "Meet new friends", icon: "🤝" },

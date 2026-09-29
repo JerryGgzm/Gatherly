@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import type { BudgetId, LocationId, ThemeId } from "./data";
+import type { BudgetId, Dinner, LocationId, ThemeId } from "./data";
 import { USER_COLOR } from "./data";
 
 export type DinnerStage =
@@ -27,7 +27,13 @@ export type Booking = {
   paid: number;
 };
 
+export type SeatHold = { dinnerId: string; heldUntil: number };
+
 export type DemoState = {
+  account: { email: string } | null;
+  hold: SeatHold | null;
+  waitlist: string[];
+  createdTables: Dinner[];
   profile: {
     firstName: string;
     age: string;
@@ -60,6 +66,10 @@ export type DemoState = {
 };
 
 export const INITIAL_STATE: DemoState = {
+  account: null,
+  hold: null,
+  waitlist: [],
+  createdTables: [],
   profile: {
     firstName: "",
     age: "",

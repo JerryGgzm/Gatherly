@@ -8,6 +8,10 @@ export type HeroEvent =
   | "hero_take_seat_click"
   | "hero_conversion_started";
 
+export type ExploreEvent = "explore_filter_change" | "explore_take_seat" | "explore_waitlist_toggle" | "explore_empty_state" | "explore_start_table";
+
+type AppEvent = HeroEvent | ExploreEvent;
+
 type Props = Record<string, string | number | boolean | undefined>;
 
 declare global {
@@ -21,7 +25,7 @@ export function deviceType(): "mobile" | "desktop" {
   return window.matchMedia("(hover: none)").matches ? "mobile" : "desktop";
 }
 
-export function track(event: HeroEvent, props: Props = {}) {
+export function track(event: AppEvent, props: Props = {}) {
   if (typeof window === "undefined") return;
   const payload = { event, device_type: deviceType(), ...props };
   (window.dataLayer ??= []).push(payload);

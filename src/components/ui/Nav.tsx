@@ -42,7 +42,7 @@ export function TopNav() {
     return () => io.disconnect();
   }, [onLanding]);
 
-  const showCta = !onLanding || pastHeroCta;
+  const showCta = onLanding ? pastHeroCta : !path.startsWith("/explore");
 
   return (
     <header className="sticky top-0 z-50 border-b-[2.5px] border-ink bg-cream/90 backdrop-blur">

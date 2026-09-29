@@ -26,3 +26,11 @@ alwaysApply: true
 - While the hold is active, the dinner shows one seat fewer for everyone else.
 - On expiry, release the seat and change the banner to a calm, non-alarming state ("Your hold ended — we'll check if the seat is still free"). Do not wipe the user's progress. When they finish, return them to the dinner and re-check availability.
 - After onboarding, return to the held dinner's booking step with its date and area preselected, never to a generic page.
+
+## Full tables and starting a table (agreed Sep 29, 2026)
+- Full tables stay visible in `/explore`, stamped "Full", with "Save me a seat" (waitlist). Never hide them.
+- Every open night (Thursdays and Saturdays, `NIGHTS` in `data.ts`) is listed. Within a night, if no table matches the current filters, or every matching table is full, show a "Start a table" card for that night.
+- A new table is allowed only for a complete spec (night + area + 1–3 vibes + budget) that no open table already covers. "Covers" means: same night, same area, same budget tier, at least one shared theme, and seats still open (`openMatch` in `booking.ts`; `useStartTable` refuses otherwise).
+- The "Start a table" drawer: night is locked when opened from a night's card; area, vibes and budget are prefilled from filters, editable, and re-checked live. If an open table covers the spec, creation is disabled and the drawer offers "Take a seat there" for that table.
+- Creating a table stores it in `createdTables` (`created: true`) and runs the normal Take a seat flow, so the creator holds the first seat. The drawer states the refund rule: if the table doesn't fill by the day before, full refund.
+- The whole-page "No tables here yet" state appears only when no night filter is set and nothing matches.
