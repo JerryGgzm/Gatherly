@@ -1,0 +1,35 @@
+---
+description: Gatherly mascot cats — cast, personalities, and creative constraints. Use for any UI that shows guests, tables, or characters.
+alwaysApply: true
+---
+
+# Gatherly mascots: five dinner cats
+
+Guests are never drawn as humans. The UI spec's human characters (sections 7, 14, 17) are superseded by these five cats. The user is always the empty sixth seat, never a cat.
+
+| Cat | Accessory | Personality / hover label | Signature | Line |
+|---|---|---|---|---|
+| Orange tabby | blue bandana | outgoing, welcoming · "The social one" | raises a paw and waves | "Hey, you made it." |
+| Tuxedo | red bow tie | skeptical, dry, composed · "The skeptical one" | 300 ms pause, slow head turn, narrowed eyes, tail flick | "…yes?" |
+| White (fluffy) | green round sunglasses on forehead | stylish, theatrical · "The cool one" | paw lowers the shades, head tilt, shades back up | "Nice choice." |
+| Calico | yellow collar + bell | chaotic, mischievous · "The chaotic one" | taps the fork away, then looks away | "Wasn't me." |
+| Gray tabby | purple neckerchief | quiet, gentle, introverted · "The quiet one" | leans back, ears flatten, slow blink | "Hi." |
+
+Rare reactions: orange stands up and waves with both paws while the dishes rattle. Tuxedo turns away and glances back. White's shades slip too far. Calico knocks the spoon off the table. Gray sinks below the table and peeks back up.
+
+## Creative constraints
+- Real cats in a slightly absurd dinner setting. They have cat faces, paws, ears, and tails. Upright sitting or standing is fine.
+- No human hands, full outfits, or human smiles. They never hold utensils like people and never talk continuously. One small accessory each.
+- Speech bubbles are at most one line, 1–4 words, and disappear after about 1.5 s.
+- Reference art (the user's original drawings): `~/.cursor/projects/Users-jerryguo-Desktop-Gatherly/assets/` (the five cat jpgs uploaded Sep 28, 2026).
+
+## Implementation
+- Code lives in `src/components/dinner/`:
+  - `cats.ts`: colors, seats, labels.
+  - `CatCharacter.tsx`: segmented SVG rig.
+  - `reactions.ts`: signature, secondary, rare, and idle reactions.
+  - `DinnerScene.tsx`: state machine, a11y, and analytics.
+  - `DinnerTable.tsx`: the table and its props.
+- Seat layout: orange at back center, tuxedo at back left, gray at back right, calico at front left, white at front right. The empty user seat is at bottom center.
+- Reuse `<DinnerScene />` anywhere a table appears. Props: `present`, `youSeated`, `selected`, `interactive`. Do not build a new table.
+- Click sequence: 1st click plays the signature, then secondary reactions rotate, and the 5th click within 8 s plays the rare one. Reactions never overlap. Cooldown is 400 ms. Idle actions fire every 4–10 s. Cross-cat reactions fire 20–35% of the time, halved on touch devices.

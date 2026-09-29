@@ -1,0 +1,28 @@
+---
+description: Gatherly browse-first booking flow, seat hold, and signup return rules. Apply when building explore, booking, signup, or onboarding.
+alwaysApply: true
+---
+
+# Booking flow decisions (agreed Sep 28, 2026)
+
+## Browse first, sign up at "Take a seat"
+- `/explore` is public. Anyone can browse dinners (date, area, themes, budget, seats left) without an account. Attendee identities are never shown there.
+- The landing CTAs (Take a seat, Find a table, Find my table) and the nav Explore link all go to `/explore`. None of them gate on auth.
+- Keep landing CTAs few and contextual:
+  - First screen: one primary CTA, the hero's "Take a seat".
+  - Header "Find a table": hidden on `/` until the hero CTA scrolls out of view.
+  - Mid-page CTAs carry filters: the location drawer uses `?area=`, and Pick your vibe uses `?themes=`.
+  - Pricing has no $15 button; only the Pass CTA.
+  - Page end: "Find my table".
+- `/explore` must read `area` and `themes` query params as initial filters.
+- Clicking "Take a seat" on a dinner ticket in `/explore`:
+  - Logged out: redirect to signup/login with `?next=/book/<dinnerId>`.
+  - Logged in but onboarding incomplete: resume only the missing steps (verification, profile, intent, questionnaire, dietary), not a full re-signup.
+  - Fully onboarded: go straight to `/book/<dinnerId>` preferences.
+
+## Seat hold (30 minutes)
+- When a not-yet-onboarded user clicks "Take a seat", hold that seat for 30 minutes and store `{ dinnerId, heldUntil }` in demo state.
+- Every signup and onboarding page shows a sticky top banner. It contains a small ticket stub for the chosen dinner (e.g. "Sat · Oct 10 · Capitol Hill") and a live mm:ss countdown, with the copy "Your seat is held".
+- While the hold is active, the dinner shows one seat fewer for everyone else.
+- On expiry, release the seat and change the banner to a calm, non-alarming state ("Your hold ended — we'll check if the seat is still free"). Do not wipe the user's progress. When they finish, return them to the dinner and re-check availability.
+- After onboarding, return to the held dinner's booking step with its date and area preselected, never to a generic page.
