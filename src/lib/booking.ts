@@ -11,7 +11,7 @@ export const HOLD_MS = 30 * 60 * 1000;
 export type OnboardingStep = "verify" | "profile" | "intent" | "questionnaire" | "dietary";
 
 const STEP_DONE: Record<OnboardingStep, (s: DemoState) => boolean> = {
-  verify: (s) => s.verified.phone && s.verified.adult && s.verified.linkedin && s.verified.terms,
+  verify: (s) => s.verified.phone && s.verified.identity?.status === "verified" && s.verified.identity.over18 && s.verified.terms,
   profile: (s) => s.profile.firstName.trim().length > 0,
   intent: (s) => s.intents.length > 0,
   questionnaire: (s) => QUESTIONS.every((q) => s.answers[q.id]),
@@ -24,21 +24,28 @@ export const missingSteps = (s: DemoState) => ONBOARDING_STEPS.filter((step) => 
 
 export const isOnboarded = (s: DemoState) => s.onboarded || missingSteps(s).length === 0;
 
-/** Where "Take a seat" leads: signup when logged out, the first missing onboarding step, or straight to booking. */
-export function seatDestination(s: DemoState, dinnerId: string) {
-  const next = `/book/${dinnerId}`;
-  if (!s.account) return `/signup?next=${encodeURIComponent(next)}`;
-  if (!isOnboarded(s)) return `/onboarding/${missingSteps(s)[0]}?next=${encodeURIComponent(next)}`;
-  return next;
+const withNext = (path: string, next: string) => `${path}?next=${encodeURIComponent(next)}`;
+
+/** After any auth or onboarding step: the first step still missing, else `next`. */
+export function resumeUrl(s: DemoState, next: string) {
+  if (!s.account) return withNext("/signup", next);
+  if (!s.signedIn) return withNext("/login", next);
+  const missing = missingSteps(s);
+  return missing.length ? withNext(`/onboarding/${missing[0]}`, next) : next;
 }
+
+/** Where "Take a seat" leads: signup / login when signed out, the first missing onboarding step, or straight to booking. */
+export const seatDestination = (s: DemoState, dinnerId: string) => resumeUrl(s, `/book/${dinnerId}`);
 
 export const holdActive = (hold: SeatHold | null, now: number | null): hold is SeatHold => !!hold && now !== null && hold.heldUntil > now;
 
-/** Seats still open. An active hold takes one seat off the table for everyone. */
-export function seatsLeft(d: Dinner, hold: SeatHold | null, now: number | null) {
-  const held = holdActive(hold, now) && hold.dinnerId === d.id ? 1 : 0;
+/** Seats still open. An active hold or the user's own booking takes one seat off the table. */
+export function seatsLeft(d: Dinner, hold: SeatHold | null, now: number | null, bookedId?: string | null) {
+  const held = (holdActive(hold, now) && hold.dinnerId === d.id) || bookedId === d.id ? 1 : 0;
   return Math.max(0, SEATS_PER_TABLE - d.seatsTaken - held);
 }
+
+export const bookedId = (s: DemoState) => s.booking?.dinnerId ?? null;
 
 export const formatCountdown = (ms: number) => {
   const total = Math.max(0, Math.ceil(ms / 1000));
@@ -121,12 +128,12 @@ export function useTakeSeat() {
   const reserve = useCallback(
     (d: Dinner) => {
       const dest = seatDestination(state, d.id);
-      const needsHold = !isOnboarded(state) || !state.account;
+      const needsHold = !isOnboarded(state) || !state.signedIn;
       const now = clock();
       if (needsHold && !(state.hold?.dinnerId === d.id && state.hold.heldUntil > now)) {
         update({ hold: { dinnerId: d.id, heldUntil: now + HOLD_MS } });
       }
-      track("explore_take_seat", { dinner_id: d.id, logged_in: !!state.account, onboarded: isOnboarded(state) });
+      track("explore_take_seat", { dinner_id: d.id, logged_in: state.signedIn, onboarded: isOnboarded(state) });
       return dest;
     },
     [state, update],

@@ -407,7 +407,7 @@ export function CatPaws({ def, seat, rig, hovered, present, uid }: LayerProps) {
                 const d = paw === "pawL" ? -1 : 1;
                 const dx = seat.pawDX - d;
                 return (
-                  <g key={paw} transform={`translate(${d * 16} -58)`}>
+                  <g key={paw} transform={`translate(${d * (seat.shoulder?.x ?? 16)} ${seat.shoulder?.y ?? -58})`}>
                     <motion.g animate={rig[paw]}>
                       <Pivot r={110} />
                       {len > 8 && (

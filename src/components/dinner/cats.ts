@@ -43,7 +43,7 @@ export const CATS: Record<CatId, CatDef> = {
     aria: "Interact with the tuxedo cat",
     pattern: "tuxedo",
     accessory: "bowtie",
-    colors: { base: "#2F2B2C", dark: "#2F2B2C", chest: "#FBF8F1", paw: "#FBF8F1", eye: "#B5D35A", whisker: "#FFFFFF", tailTip: "#FBF8F1", acc: "#E23B2E" },
+    colors: { base: "#6B7280", dark: "#555C68", chest: "#FBF8F1", paw: "#FBF8F1", eye: "#E9B42C", whisker: "#FFFFFF", tailTip: "#FBF8F1", acc: "#E23B2E" },
     chair: "#FFD84D",
   },
   gray: {
@@ -63,7 +63,17 @@ export const CATS: Record<CatId, CatDef> = {
     aria: "Interact with the calico cat",
     pattern: "calico",
     accessory: "bell",
-    colors: { base: "#FFF8EC", dark: "#4A3428", patch: "#F0892F", chest: "#FFFFFF", paw: "#FFF8EC", eye: "#E0C53A", whisker: "#242424", tailTip: "#F0892F", acc: "#F5C518" },
+    colors: {
+      base: "#FFF8EC",
+      dark: "#4A3428",
+      patch: "#F0892F",
+      chest: "#FFFFFF",
+      paw: "#FFF8EC",
+      eye: "#E0C53A",
+      whisker: "#242424",
+      tailTip: "#F0892F",
+      acc: "#F5C518",
+    },
     chair: "#63C174",
   },
   white: {
@@ -97,6 +107,8 @@ export type Seat = {
   back: boolean;
   /** Place setting on the table for this seat. */
   plate: { x: number; y: number };
+  /** Local shoulder joint for the front paws; defaults to the table pose (16, -58). */
+  shoulder?: { x: number; y: number };
 };
 
 export const SEATS: Record<CatId, Seat> = {

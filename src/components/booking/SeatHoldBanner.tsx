@@ -32,10 +32,19 @@ export function SeatHoldBanner({ showContinue = false, className }: { showContin
         </div>
         <AnimatePresence mode="wait" initial={false}>
           {active ? (
-            <motion.p key="on" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex items-center gap-2 font-display text-[15px] font-semibold">
+            <motion.p
+              key="on"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2 font-display text-[15px] font-semibold"
+            >
               Your seat is held
               <span
-                className={clsx("rounded-full border-2 border-ink px-2.5 py-0.5 font-display text-sm font-bold tabular-nums", urgent ? "bg-orange text-white" : "bg-white")}
+                className={clsx(
+                  "rounded-full border-2 border-ink px-2.5 py-0.5 font-display text-sm font-bold tabular-nums",
+                  urgent ? "bg-orange text-white" : "bg-white",
+                )}
                 aria-label={`${Math.ceil(left / 60000)} minutes left`}
               >
                 {formatCountdown(left)}
@@ -48,8 +57,11 @@ export function SeatHoldBanner({ showContinue = false, className }: { showContin
           )}
         </AnimatePresence>
         {showContinue && (
-          <Link href={seatDestination(state, dinner.id)} className="ml-auto font-display text-sm font-bold underline decoration-2 underline-offset-4 hover:text-orange">
-            {state.account ? "Pick up where you left off →" : "Finish signing up →"}
+          <Link
+            href={seatDestination(state, dinner.id)}
+            className="ml-auto font-display text-sm font-bold underline decoration-2 underline-offset-4 hover:text-orange"
+          >
+            {state.signedIn ? "Pick up where you left off →" : state.account ? "Log in to continue →" : "Finish signing up →"}
           </Link>
         )}
       </div>

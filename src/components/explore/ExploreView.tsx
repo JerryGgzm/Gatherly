@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SeatHoldBanner } from "@/components/booking/SeatHoldBanner";
 import { TicketCard } from "@/components/ui/TicketCard";
 import { track } from "@/lib/analytics";
-import { holdActive, openMatch, seatsLeft, useDinners, useNow, useStartTable, useTakeSeat, type TableSpec } from "@/lib/booking";
+import { bookedId, holdActive, openMatch, seatsLeft, useDinners, useNow, useStartTable, useTakeSeat, type TableSpec } from "@/lib/booking";
 import { NIGHTS, nightByKey, nightKey, type Dinner, type Night } from "@/lib/data";
 import { useDemo } from "@/lib/store";
 import { EmptyTables } from "./EmptyTables";
@@ -52,7 +52,8 @@ export function ExploreView({ initial }: { initial: Filters }) {
   const results = useMemo(() => dinners.filter(matches(filters)), [dinners, filters]);
 
   const heldId = holdActive(state.hold, now) ? state.hold.dinnerId : null;
-  const isFull = (d: Dinner) => seatsLeft(d, state.hold, now) <= 0 && d.id !== heldId;
+  const mine = bookedId(state);
+  const isFull = (d: Dinner) => seatsLeft(d, state.hold, now, mine) <= 0 && d.id !== heldId && d.id !== mine;
 
   const groups = NIGHTS.filter((n) => filters.nights.length === 0 || filters.nights.includes(nightKey(n))).map((n) => {
     const list = results.filter((d) => nightKey(d) === nightKey(n));
@@ -210,7 +211,7 @@ export function ExploreView({ initial }: { initial: Filters }) {
               <TablePreview
                 dinner={preview}
                 heldForYou={heldId === preview.id}
-                seatsOpen={seatsLeft(preview, state.hold, now)}
+                seatsOpen={seatsLeft(preview, state.hold, now, mine)}
                 taking={taking?.id === preview.id ? taking.stage : "idle"}
                 onTakeSeat={() => takeSeat(preview)}
                 onSequenceDone={() => taking && setTimeout(() => leave(taking.dest), 250)}

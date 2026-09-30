@@ -1,7 +1,7 @@
 const ITEMS = [
   { icon: "📱", title: "Phone verified", copy: "Every guest confirms a real phone number." },
-  { icon: "🔞", title: "18+ only", copy: "Everyone confirms they're an adult." },
-  { icon: "💼", title: "LinkedIn verified", copy: "A private identity check. Never shown publicly." },
+  { icon: "🔞", title: "18+ only", copy: "Checked against their ID, not just a checkbox." },
+  { icon: "🪪", title: "ID verified", copy: "Every guest matches a government ID to a selfie, via Stripe. Never shown to anyone." },
   { icon: "🏙️", title: "Public venues", copy: "Always a real restaurant. Never a private address." },
   { icon: "🛡️", title: "Report & block", copy: "Report anyone, anytime. Never get matched with them again." },
 ];

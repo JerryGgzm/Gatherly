@@ -218,7 +218,10 @@ export function DinnerScene({
       await sleep(380);
       if (cancelled) return;
       say("orange", "Hey, you made it.");
-      await Promise.all([REACTIONS.orange.signature.run(ctx("orange")), sleep(250).then(() => rigs.gray.eyes.start({ scaleY: [1, 0.1, 0.1, 1], transition: { duration: 0.9 } }))]);
+      await Promise.all([
+        REACTIONS.orange.signature.run(ctx("orange")),
+        sleep(250).then(() => rigs.gray.eyes.start({ scaleY: [1, 0.1, 0.1, 1], transition: { duration: 0.9 } })),
+      ]);
       if (cancelled) return;
       busy.current = false;
       doneRef.current?.();

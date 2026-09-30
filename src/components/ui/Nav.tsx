@@ -17,7 +17,7 @@ const LINKS = [
   { href: "/profile", label: "Profile" },
 ];
 
-const FLOW_PREFIXES = ["/signup", "/onboarding", "/book"];
+const FLOW_PREFIXES = ["/signup", "/login", "/onboarding", "/book"];
 
 export function useIsFlowRoute() {
   const path = usePathname();

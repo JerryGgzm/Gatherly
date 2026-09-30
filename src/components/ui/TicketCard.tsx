@@ -4,7 +4,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { motion, useReducedMotion } from "framer-motion";
 import { budgetById, locationById, themeById, type Dinner } from "@/lib/data";
-import { formatCountdown, holdActive, seatsLeft, useNow, useTakeSeat } from "@/lib/booking";
+import { bookedId, formatCountdown, holdActive, seatsLeft, useNow, useTakeSeat } from "@/lib/booking";
 import { useDemo } from "@/lib/store";
 import { SeatRow } from "./SeatRow";
 
@@ -32,12 +32,29 @@ export function TicketCard({ dinner, tilt = 0, className, now: sharedNow, onTake
   const budget = budgetById(dinner.budget);
 
   const heldForYou = holdActive(state.hold, now) && state.hold.dinnerId === dinner.id;
-  const left = seatsLeft(dinner, state.hold, now);
-  const full = left <= 0 && !heldForYou;
+  const booked = bookedId(state) === dinner.id;
+  const left = seatsLeft(dinner, state.hold, now, bookedId(state));
+  const full = left <= 0 && !heldForYou && !booked;
   const waitlisted = state.waitlist.includes(dinner.id);
 
-  const stamp = heldForYou ? `Held · ${formatCountdown(state.hold!.heldUntil - now!)}` : full ? "Full" : `${left} seat${left > 1 ? "s" : ""} left`;
-  const cta = pending ? "Seat held ✓" : heldForYou ? "Continue" : full ? (waitlisted ? "On the waitlist ✓" : "Save me a seat") : "Take a seat";
+  const stamp = booked
+    ? "You're in"
+    : heldForYou
+      ? `Held · ${formatCountdown(state.hold!.heldUntil - now!)}`
+      : full
+        ? "Full"
+        : `${left} seat${left > 1 ? "s" : ""} left`;
+  const cta = booked
+    ? "See booking"
+    : pending
+      ? "Seat held ✓"
+      : heldForYou
+        ? "Continue"
+        : full
+          ? waitlisted
+            ? "On the waitlist ✓"
+            : "Save me a seat"
+          : "Take a seat";
 
   const shared = {
     className: clsx("group relative block w-full text-left", className),
@@ -49,7 +66,7 @@ export function TicketCard({ dinner, tilt = 0, className, now: sharedNow, onTake
     transition: { type: "spring" as const, stiffness: 400, damping: 22 },
     onMouseEnter: () => onPreview?.(dinner),
     onFocus: () => onPreview?.(dinner),
-    "aria-label": `${dinner.dayLabel} ${loc.name}, 7 PM, ${full ? "table full" : heldForYou ? "seat held for you" : `${left} seats left`}. ${cta}`,
+    "aria-label": `${dinner.dayLabel} ${loc.name}, 7 PM, ${booked ? "you're booked" : full ? "table full" : heldForYou ? "seat held for you" : `${left} seats left`}. ${cta}`,
   };
 
   const body = (
@@ -58,6 +75,7 @@ export function TicketCard({ dinner, tilt = 0, className, now: sharedNow, onTake
         className={clsx(
           "relative flex overflow-hidden rounded-[22px] border-[2.5px] border-ink bg-[#FFFDF7] shadow-[4px_4px_0_#242424] transition-shadow group-hover:shadow-[7px_7px_0_#242424]",
           heldForYou && "ring-4 ring-lemon",
+          booked && "ring-4 ring-grass",
           full && "bg-[#F4EFE6]",
         )}
       >
@@ -81,22 +99,34 @@ export function TicketCard({ dinner, tilt = 0, className, now: sharedNow, onTake
             </span>
           </div>
           <div className="flex flex-wrap gap-1.5">
-            {dinner.created && <span className="rounded-full border-2 border-ink bg-grass-soft px-2 py-0.5 font-display text-[11px] font-bold uppercase">★ Your table</span>}
+            {dinner.created && (
+              <span className="rounded-full border-2 border-ink bg-grass-soft px-2 py-0.5 font-display text-[11px] font-bold uppercase">★ Your table</span>
+            )}
             {dinner.themes.map((t) => {
               const th = themeById(t);
               return (
-                <span key={t} className="rounded-full border-2 border-ink px-2 py-0.5 font-display text-[11px] font-bold uppercase" style={{ background: `${th.color}33` }}>
+                <span
+                  key={t}
+                  className="rounded-full border-2 border-ink px-2 py-0.5 font-display text-[11px] font-bold uppercase"
+                  style={{ background: `${th.color}33` }}
+                >
                   {th.icon} {th.label}
                 </span>
               );
             })}
           </div>
-          <SeatRow dinnerId={dinner.id} taken={Math.min(dinner.seatsTaken, 6)} heldForYou={heldForYou} />
+          <SeatRow dinnerId={dinner.id} taken={Math.min(dinner.seatsTaken, 6)} heldForYou={heldForYou || booked} />
           <div className="flex items-center justify-between gap-2">
             <motion.span
               className={clsx(
                 "whitespace-nowrap rounded-md border-2 px-2 py-0.5 font-display text-xs font-bold uppercase tabular-nums",
-                heldForYou ? "border-ink bg-lemon text-ink" : full ? "border-ink bg-ink text-cream" : "border-orange text-orange",
+                booked
+                  ? "border-ink bg-grass text-ink"
+                  : heldForYou
+                    ? "border-ink bg-lemon text-ink"
+                    : full
+                      ? "border-ink bg-ink text-cream"
+                      : "border-orange text-orange",
               )}
               variants={{ rest: { rotate: -6 }, hover: { rotate: [-6, 2, -8, -4] } }}
               transition={{ duration: 0.5 }}
@@ -137,10 +167,11 @@ export function TicketCard({ dinner, tilt = 0, className, now: sharedNow, onTake
 
   return (
     <MotionLink
-      href={destination(dinner)}
+      href={booked ? `/book/${dinner.id}` : destination(dinner)}
       {...shared}
       onClick={(e: React.MouseEvent) => {
         if (pending) return e.preventDefault();
+        if (booked) return;
         if (onTakeSeat) {
           e.preventDefault();
           onTakeSeat(dinner);

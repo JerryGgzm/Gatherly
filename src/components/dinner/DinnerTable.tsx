@@ -182,8 +182,28 @@ export function TableTop({ rig, glow, youSeated }: { rig: TableRig; glow: boolea
     <g>
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="#E8743F" stroke={INK} strokeWidth={4} />
       <ellipse cx={cx} cy={cy - 2} rx={rx - 14} ry={ry - 9} fill="#FFF6E6" stroke={INK} strokeWidth={2.6} />
-      <ellipse cx={cx} cy={cy - 2} rx={rx - 34} ry={ry - 24} fill="none" stroke="#FF6B35" strokeWidth={2.6} strokeDasharray="2 12" strokeLinecap="round" opacity={0.5} />
-      <motion.ellipse cx={cx} cy={cy} rx={rx - 14} ry={ry - 9} fill="#FFD84D" initial={false} animate={{ opacity: glow ? 0.3 : 0 }} transition={{ duration: 0.3 }} />
+      <ellipse
+        cx={cx}
+        cy={cy - 2}
+        rx={rx - 34}
+        ry={ry - 24}
+        fill="none"
+        stroke="#FF6B35"
+        strokeWidth={2.6}
+        strokeDasharray="2 12"
+        strokeLinecap="round"
+        opacity={0.5}
+      />
+      <motion.ellipse
+        cx={cx}
+        cy={cy}
+        rx={rx - 14}
+        ry={ry - 9}
+        fill="#FFD84D"
+        initial={false}
+        animate={{ opacity: glow ? 0.3 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
 
       <motion.g animate={rig.dishes}>
         <g transform={`translate(${cx} ${cy})`}>
@@ -256,7 +276,14 @@ export function StringLights({ bright }: { bright: boolean }) {
       <path d="M20 18 Q400 110 780 18" fill="none" stroke={INK} strokeWidth={2.4} />
       {bulbs.map((b, i) => (
         <g key={i} transform={`translate(${b.x} ${b.y})`}>
-          <motion.circle cy={9} r={14} fill="#FFE8A3" initial={false} animate={{ opacity: bright ? 0.7 : 0.25 }} transition={{ duration: 0.35, delay: i * 0.02 }} />
+          <motion.circle
+            cy={9}
+            r={14}
+            fill="#FFE8A3"
+            initial={false}
+            animate={{ opacity: bright ? 0.7 : 0.25 }}
+            transition={{ duration: 0.35, delay: i * 0.02 }}
+          />
           <path d="M0 0 L0 3" stroke={INK} strokeWidth={2} />
           <ellipse cy={9} rx={5} ry={6.5} fill={colors[i % colors.length]} stroke={INK} strokeWidth={2} />
         </g>

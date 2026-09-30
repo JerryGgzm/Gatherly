@@ -1,14 +1,4 @@
-export type ThemeId =
-  | "startups"
-  | "music"
-  | "film"
-  | "travel"
-  | "food"
-  | "tech"
-  | "books"
-  | "art"
-  | "fitness"
-  | "life";
+export type ThemeId = "startups" | "music" | "film" | "travel" | "food" | "tech" | "books" | "art" | "fitness" | "life";
 
 export type Theme = {
   id: ThemeId;
@@ -120,18 +110,138 @@ export type Dinner = {
 export type Night = Pick<Dinner, "weekday" | "dayLabel" | "month" | "day">;
 
 export const DINNERS: Dinner[] = [
-  { id: "thu-oct1-ud", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 1, location: "udistrict", themes: ["books", "tech", "art"], budget: "casual", seatsTaken: 6 },
-  { id: "thu-oct1-slu", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 1, location: "slu", themes: ["startups", "fitness", "food"], budget: "comfortable", seatsTaken: 6 },
-  { id: "sat-oct3-cap", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 3, location: "capitolhill", themes: ["music", "life", "food"], budget: "casual", seatsTaken: 4 },
-  { id: "sat-oct3-bel", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 3, location: "bellevue", themes: ["tech", "travel", "life"], budget: "treat", seatsTaken: 2 },
-  { id: "thu-oct8-slu", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 8, location: "slu", themes: ["tech", "startups", "travel"], budget: "comfortable", seatsTaken: 4 },
-  { id: "thu-oct8-cap", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 8, location: "capitolhill", themes: ["music", "art", "film"], budget: "casual", seatsTaken: 2 },
-  { id: "sat-oct10-cap", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 10, location: "capitolhill", themes: ["startups", "tech", "life"], budget: "comfortable", seatsTaken: 3 },
-  { id: "sat-oct10-ud", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 10, location: "udistrict", themes: ["books", "film", "food"], budget: "casual", seatsTaken: 1 },
-  { id: "sat-oct10-bel", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 10, location: "bellevue", themes: ["food", "travel", "fitness"], budget: "treat", seatsTaken: 5 },
-  { id: "thu-oct15-ud", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 15, location: "udistrict", themes: ["tech", "books", "life"], budget: "casual", seatsTaken: 2 },
-  { id: "thu-oct15-bel", weekday: "THU", dayLabel: "Thursday", month: "OCT", day: 15, location: "bellevue", themes: ["startups", "fitness", "life"], budget: "comfortable", seatsTaken: 3 },
-  { id: "sat-oct17-slu", weekday: "SAT", dayLabel: "Saturday", month: "OCT", day: 17, location: "slu", themes: ["film", "music", "food"], budget: "treat", seatsTaken: 0 },
+  {
+    id: "thu-oct1-ud",
+    weekday: "THU",
+    dayLabel: "Thursday",
+    month: "OCT",
+    day: 1,
+    location: "udistrict",
+    themes: ["books", "tech", "art"],
+    budget: "casual",
+    seatsTaken: 6,
+  },
+  {
+    id: "thu-oct1-slu",
+    weekday: "THU",
+    dayLabel: "Thursday",
+    month: "OCT",
+    day: 1,
+    location: "slu",
+    themes: ["startups", "fitness", "food"],
+    budget: "comfortable",
+    seatsTaken: 6,
+  },
+  {
+    id: "sat-oct3-cap",
+    weekday: "SAT",
+    dayLabel: "Saturday",
+    month: "OCT",
+    day: 3,
+    location: "capitolhill",
+    themes: ["music", "life", "food"],
+    budget: "casual",
+    seatsTaken: 4,
+  },
+  {
+    id: "sat-oct3-bel",
+    weekday: "SAT",
+    dayLabel: "Saturday",
+    month: "OCT",
+    day: 3,
+    location: "bellevue",
+    themes: ["tech", "travel", "life"],
+    budget: "treat",
+    seatsTaken: 2,
+  },
+  {
+    id: "thu-oct8-slu",
+    weekday: "THU",
+    dayLabel: "Thursday",
+    month: "OCT",
+    day: 8,
+    location: "slu",
+    themes: ["tech", "startups", "travel"],
+    budget: "comfortable",
+    seatsTaken: 4,
+  },
+  {
+    id: "thu-oct8-cap",
+    weekday: "THU",
+    dayLabel: "Thursday",
+    month: "OCT",
+    day: 8,
+    location: "capitolhill",
+    themes: ["music", "art", "film"],
+    budget: "casual",
+    seatsTaken: 2,
+  },
+  {
+    id: "sat-oct10-cap",
+    weekday: "SAT",
+    dayLabel: "Saturday",
+    month: "OCT",
+    day: 10,
+    location: "capitolhill",
+    themes: ["startups", "tech", "life"],
+    budget: "comfortable",
+    seatsTaken: 3,
+  },
+  {
+    id: "sat-oct10-ud",
+    weekday: "SAT",
+    dayLabel: "Saturday",
+    month: "OCT",
+    day: 10,
+    location: "udistrict",
+    themes: ["books", "film", "food"],
+    budget: "casual",
+    seatsTaken: 1,
+  },
+  {
+    id: "sat-oct10-bel",
+    weekday: "SAT",
+    dayLabel: "Saturday",
+    month: "OCT",
+    day: 10,
+    location: "bellevue",
+    themes: ["food", "travel", "fitness"],
+    budget: "treat",
+    seatsTaken: 5,
+  },
+  {
+    id: "thu-oct15-ud",
+    weekday: "THU",
+    dayLabel: "Thursday",
+    month: "OCT",
+    day: 15,
+    location: "udistrict",
+    themes: ["tech", "books", "life"],
+    budget: "casual",
+    seatsTaken: 2,
+  },
+  {
+    id: "thu-oct15-bel",
+    weekday: "THU",
+    dayLabel: "Thursday",
+    month: "OCT",
+    day: 15,
+    location: "bellevue",
+    themes: ["startups", "fitness", "life"],
+    budget: "comfortable",
+    seatsTaken: 3,
+  },
+  {
+    id: "sat-oct17-slu",
+    weekday: "SAT",
+    dayLabel: "Saturday",
+    month: "OCT",
+    day: 17,
+    location: "slu",
+    themes: ["film", "music", "food"],
+    budget: "treat",
+    seatsTaken: 0,
+  },
 ];
 
 export const dinnerById = (id: string) => DINNERS.find((d) => d.id === id);

@@ -67,8 +67,7 @@ export const REACTIONS: Record<CatId, CatReactions> = {
       },
       {
         id: "sniff",
-        run: (c) =>
-          Promise.all([k(c.rig.head, { y: [0, 7, 5, 7, 0], rotate: [0, 0, 2, -2, 0] }, 900), k(c.rig.body, { y: [0, 3, 3, 0] }, 900)]),
+        run: (c) => Promise.all([k(c.rig.head, { y: [0, 7, 5, 7, 0], rotate: [0, 0, 2, -2, 0] }, 900), k(c.rig.body, { y: [0, 3, 3, 0] }, 900)]),
       },
     ],
     rare: {
@@ -166,10 +165,7 @@ export const REACTIONS: Record<CatId, CatReactions> = {
           c.look("tuxedo", c.points.head("calico"), 700);
         };
         c.maybe(0.3, cross);
-        await Promise.all([
-          k(c.rig.pawR, { x: [0, 26, 0], y: [0, -3, 0] }, 450),
-          sleep(160).then(() => k(c.table.fork, { x: [0, 20], rotate: [0, 14] }, 300)),
-        ]);
+        await Promise.all([k(c.rig.pawR, { x: [0, 26, 0], y: [0, -3, 0] }, 450), sleep(160).then(() => k(c.table.fork, { x: [0, 20], rotate: [0, 14] }, 300))]);
         await k(c.rig.face, { x: [0, -9, -9, 0] }, 900, [0, 0.2, 0.8, 1]);
         void sleep(3500).then(() => k(c.table.fork, { x: [20, 0], rotate: [14, 0] }, 600));
       },

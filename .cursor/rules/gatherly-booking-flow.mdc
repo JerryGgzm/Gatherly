@@ -20,6 +20,12 @@ alwaysApply: true
   - Logged in but onboarding incomplete: resume only the missing steps (verification, profile, intent, questionnaire, dietary), not a full re-signup.
   - Fully onboarded: go straight to `/book/<dinnerId>` preferences.
 
+## Identity verification (agreed Sep 29, 2026)
+- Signup is phone + password (SMS code). Verification is Stripe Identity only: driver's license (document) + matching selfie. No LinkedIn and no alternative methods.
+- Flow: open Stripe Identity (modal / hosted page), upload the license, take a selfie, submit, return to Gatherly, then wait for the result (in production, the `identity.verification_session.*` webhook; in the demo, a mock in `StripeIdentity.tsx`).
+- 18+ is derived from the document's date of birth. There is no self-declared 18+ checkbox.
+- Store only the result (`verified.identity`: `sessionId`, `status`, `over18`), never the images. A `requires_input` result shows a calm retry, and progress is not lost.
+
 ## Seat hold (30 minutes)
 - When a not-yet-onboarded user clicks "Take a seat", hold that seat for 30 minutes and store `{ dinnerId, heldUntil }` in demo state.
 - Every signup and onboarding page shows a sticky top banner. It contains a small ticket stub for the chosen dinner (e.g. "Sat · Oct 10 · Capitol Hill") and a live mm:ss countdown, with the copy "Your seat is held".

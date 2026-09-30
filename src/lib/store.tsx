@@ -4,15 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { BudgetId, Dinner, LocationId, ThemeId } from "./data";
 import { USER_COLOR } from "./data";
 
-export type DinnerStage =
-  | "none"
-  | "matching"
-  | "confirmed"
-  | "revealed"
-  | "room"
-  | "dinner"
-  | "post"
-  | "done";
+export type DinnerStage = "none" | "matching" | "confirmed" | "revealed" | "room" | "dinner" | "post" | "done";
 
 export type ArrivalStatus = "not-here" | "on-my-way" | "here" | "late";
 
@@ -27,10 +19,23 @@ export type Booking = {
   paid: number;
 };
 
+/**
+ * Outcome of a Stripe Identity VerificationSession (document + matching selfie), as delivered to our backend.
+ * Only the result is kept here; Stripe holds the document and selfie images.
+ */
+export type IdentityResult = {
+  sessionId: string;
+  status: "verified" | "requires_input";
+  /** Derived from the document's date of birth. */
+  over18: boolean;
+  error?: string;
+};
+
 export type SeatHold = { dinnerId: string; heldUntil: number };
 
 export type DemoState = {
-  account: { email: string } | null;
+  account: { phone: string } | null;
+  signedIn: boolean;
   hold: SeatHold | null;
   waitlist: string[];
   createdTables: Dinner[];
@@ -45,7 +50,7 @@ export type DemoState = {
     bio: string;
     color: string;
   };
-  verified: { phone: boolean; adult: boolean; linkedin: boolean; terms: boolean };
+  verified: { phone: boolean; adult: boolean; identity: IdentityResult | null; terms: boolean };
   intents: string[];
   answers: Record<string, string>;
   optionalAnswers: Record<string, string>;
@@ -67,6 +72,7 @@ export type DemoState = {
 
 export const INITIAL_STATE: DemoState = {
   account: null,
+  signedIn: false,
   hold: null,
   waitlist: [],
   createdTables: [],
@@ -81,7 +87,7 @@ export const INITIAL_STATE: DemoState = {
     bio: "",
     color: USER_COLOR,
   },
-  verified: { phone: false, adult: false, linkedin: false, terms: false },
+  verified: { phone: false, adult: false, identity: null, terms: false },
   intents: [],
   answers: {},
   optionalAnswers: {},

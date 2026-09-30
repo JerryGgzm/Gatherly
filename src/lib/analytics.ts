@@ -10,7 +10,9 @@ export type HeroEvent =
 
 export type ExploreEvent = "explore_filter_change" | "explore_take_seat" | "explore_waitlist_toggle" | "explore_empty_state" | "explore_start_table";
 
-type AppEvent = HeroEvent | ExploreEvent;
+export type FlowEvent = "signup_complete" | "onboarding_complete" | "book_confirm";
+
+type AppEvent = HeroEvent | ExploreEvent | FlowEvent;
 
 type Props = Record<string, string | number | boolean | undefined>;
 
